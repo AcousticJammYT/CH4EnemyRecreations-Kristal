@@ -107,4 +107,8 @@ function MathUtils.approachCurve(val, target, amount)
     return MathUtils.approach(val, target, math.max(t, math.abs(target - val) / amount))
 end
 
+function MathUtils.approachCurveDTMULT(val, target, amount)
+    return MathUtils.approach(val, target, math.max(0.1, math.abs(target - val) / amount) * DTMULT)
+end
+
 return MathUtils
