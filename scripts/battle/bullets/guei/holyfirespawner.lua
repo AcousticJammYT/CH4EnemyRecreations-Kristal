@@ -2,7 +2,7 @@ local HolyFireSpawner, super = Class(Bullet)
 
 function HolyFireSpawner:init(x, y, bullets, count)
     -- Last argument = sprite path
-    super.init(self, x, y, "battle/bullets/HolyFireSpawner")
+    super.init(self, x, y, "battle/bullets/smallbullet")
 	self.timer = 0
 	self.bullets = bullets or 2
 	self.speedtarg = 6
