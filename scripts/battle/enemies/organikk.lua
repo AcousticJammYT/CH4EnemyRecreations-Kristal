@@ -212,7 +212,7 @@ function Organikk:update()
 
     if Game.battle.state ~= "TRANSITION" and Game.battle.state ~= "INTRO" then
         self.siner = self.siner + (1 / 6) * DTMULT
-        self.x = self.init_x + (math.sin(self.siner / 1.5)) * 3
+        self.sprite.x = (math.sin(self.siner / 1.5)) * 3
     end
 
     local king = TableUtils.filter(Game.battle:getActiveEnemies(), function(e) return e.id == "organikking" end)
