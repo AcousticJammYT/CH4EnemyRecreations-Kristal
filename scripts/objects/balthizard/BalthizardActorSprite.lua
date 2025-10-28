@@ -25,19 +25,19 @@ function BalthizardActorSprite:init(actor)
 
     self.neckpiece1 = Sprite(self:getTexturePath("neckpiece"), 0, 0)
     self.neckpiece1:setOriginExact(4, 4)
-    self.neckpiece1:setColor(166/255, 94/255, 122/255)
+    self.neckpiece1:setColor({166/255, 94/255, 122/255})
     self.neckpiece1.debug_select = false
     self:addChild(self.neckpiece1)
 
     self.neckpiece2 = Sprite(self:getTexturePath("neckpiece"), 0, 0)
     self.neckpiece2:setOriginExact(4, 4)
-    self.neckpiece2:setColor(166/255, 94/255, 122/255)
+    self.neckpiece2:setColor({166/255, 94/255, 122/255})
     self.neckpiece2.debug_select = false
     self:addChild(self.neckpiece2)
 
     self.neckpiece3 = Sprite(self:getTexturePath("neckpiece"), 0, 0)
     self.neckpiece3:setOriginExact(4, 4)
-    self.neckpiece3:setColor(166/255, 94/255, 122/255)
+    self.neckpiece3:setColor({166/255, 94/255, 122/255})
     self.neckpiece3.debug_select = false
     self:addChild(self.neckpiece3)
 
@@ -71,7 +71,7 @@ function BalthizardActorSprite:init(actor)
     self.eyedelay = 0
     self.eyesiner = 0
 
-    self.headamplitude = 1
+    self.headamplitude = 0
 end
 
 function BalthizardActorSprite:getTexturePath(sprite_name)
@@ -91,15 +91,15 @@ end
 function BalthizardActorSprite:update()
     super.update(self)
 
-    if self.headspeed > 1 then
+    if self.headspeed > 2 then
         self.headspeed = self.headspeed - self.headfriction * DTMULT
     end
-    if self.headspeed < -1 then
+    if self.headspeed < -2 then
         self.headspeed = self.headspeed + self.headfriction * DTMULT
     end
-    if self.headoffsetx > 1 then
+    if self.headoffsetx > 2 then
         self.headspeed = self.headspeed - self.headgravity * DTMULT
-    elseif self.headoffsetx < -1 then
+    elseif self.headoffsetx < -2 then
         self.headspeed = self.headspeed + self.headgravity * DTMULT
     else
         self.headoffsetx = 0
@@ -107,12 +107,12 @@ function BalthizardActorSprite:update()
             self.headspeed = 0
         end
     end
-    if self.headoffsetx > 32.5 then
-        self.headoffsetx = 32.5
+    if self.headoffsetx > 65 then
+        self.headoffsetx = 65
         self.headspeed = 0
     end
-    if self.headoffsetx < -32.5 then
-        self.headoffsetx = -32.5
+    if self.headoffsetx < -65 then
+        self.headoffsetx = -65
         self.headspeed = 0
     end
     if self.headspeed > 15 then
@@ -121,7 +121,9 @@ function BalthizardActorSprite:update()
     if self.headspeed < -15 then
         self.headspeed = -15
     end
+
     self.headoffsetx = self.headoffsetx + self.headspeed * DTMULT
+
     if self.headoffsety > 0 then
         self.headoffsety = self.headoffsety - 0.5 * DTMULT
     end
@@ -131,8 +133,17 @@ function BalthizardActorSprite:update()
     if self.eyedelay < 1 then
         self.eyesiner = self.eyesiner + 1 * DTMULT
     end
+
     self.animsiner = self.animsiner + 1 * DTMULT
+	
+    if self.shaking then
+        self.headamplitude = MathUtils.lerp(self.headamplitude, 0, 0.25)
+    else
+        self.headamplitude = MathUtils.lerp(self.headamplitude, 5/2, 0.25)
+    end
+	
     self.eyedelay = self.eyedelay - 1 * DTMULT
+
     if self.eyedelay < 1 then
         self.headindex = 7 + (math.sin(self.eyesiner / 12)) * 5
     end
@@ -156,27 +167,25 @@ function BalthizardActorSprite:update()
             self.head:setSprite(self:getTexturePath("head_spared"))
         end
         self.head:setFrame(math.floor(self.headindex))
-        self.head.x = self.x + 13 + self.headoffsetx + math.sin(self.animsiner / 8) * self.headamplitude
-        self.head.y = self.y + 28 + self.headoffsety + math.cos(self.animsiner / 6) * self.headamplitude / 2
+        self.head.x = self.x + 13 + self.headoffsetx + (math.sin(self.animsiner / 8) * self.headamplitude)
+        self.head.y = self.y + 28 + self.headoffsety + ((math.cos(self.animsiner / 6) * self.headamplitude) / 2)
+
         if not self.shaking then
             if (self.animsiner % 12) == 0 and not self.lightup then
-                local smoke = BalthizardSmoke(-3 + self.x + 13 + self.headoffsetx - 7 + (math.sin(self.animsiner / 8)) * self.headamplitude, self.y + 28 + self.headoffsety + (math.cos(self.animsiner / 6)) * self.headamplitude / 2 - 10, 1, self.spareable and 3 or 2)
-                smoke.speed = TableUtils.pick({-1, -2, -3}) + 1
-                smoke:setScale(0.25)
+                local smoke = BalthizardSmoke(-3 + self.x + 13 + self.headoffsetx - 7 + (math.sin(self.animsiner / 8)) * self.headamplitude, self.y + 28 + self.headoffsety + (math.cos(self.animsiner / 6)) * self.headamplitude / 2 - 10, 0.125, 1, self.spareable and 3 or 2)
+                smoke.physics.speed = (TableUtils.pick({-1, -2, -3}) + 1)/2
                 smoke.alpha = 0.75
                 self:addChild(smoke)
             end
-            if (self.animsiner % 12) == 0 and not self.lightup then
-                local smoke = BalthizardSmoke(3 + self.x + 13 + self.headoffsetx + 10 + (math.sin(self.animsiner / 8)) * self.headamplitude, self.y + 28 + self.headoffsety + (math.cos(self.animsiner / 6)) * self.headamplitude / 2 - 10, 1, self.spareable and 3 or 2)
-                smoke.speed = TableUtils.pick({1, 2, 3}) - 1
-                smoke:setScale(0.25)
+            if (self.animsiner % 12) == 6 and not self.lightup then
+                local smoke = BalthizardSmoke(3 + self.x + 13 + self.headoffsetx + 10 + (math.sin(self.animsiner / 8)) * self.headamplitude, self.y + 28 + self.headoffsety + (math.cos(self.animsiner / 6)) * self.headamplitude / 2 - 10, 0.125, 1, self.spareable and 3 or 2)
+                smoke.physics.speed = (TableUtils.pick({1, 2, 3}) - 1)/2
                 smoke.alpha = 0.75
                 self:addChild(smoke)
             end
             if (self.animsiner % 20) == 0 then
-                local smoke = BalthizardSmoke(self.x + 63, self.y + 10 + (math.sin(self.animsiner / 8)) * 4, 1, self.spareable and 3 or 2)
-                smoke.speed = TableUtils.pick({1, -1})
-                smoke:setScale(0.35)
+                local smoke = BalthizardSmoke(self.x + 63, self.y + 10 + (math.sin(self.animsiner / 8)) * 4, 0.175, 1, self.spareable and 3 or 2)
+                smoke.physics.speed = (TableUtils.pick({1, -1}))/2
                 smoke.alpha = 0.75
                 self:addChild(smoke)
             end
