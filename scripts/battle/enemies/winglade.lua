@@ -42,6 +42,8 @@ function Winglade:init()
     self.low_health_text = "* Winglade sheds feathers heavily."
     self.tired_text = "* Winglade's eye flutters shut."
 
+    self.low_health_percentage = 1/3
+
     self:registerAct("Spin", "Spin\n50%\nmercy")
     self:registerAct("SpinS", "60%\nMercy\nto all", {"susie"})
     self:registerAct("Whirl", "SPARE\nall!", {"susie", "ralsei"}, 64)
