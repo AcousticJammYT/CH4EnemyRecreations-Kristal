@@ -32,7 +32,7 @@ function Spiral:update()
         if self.timer == 5 then
             local bullet = self.wave:spawnBullet("mizzle/holydroplet", self.x, self.y)
             if bullet then
-                bullet.physics.direction = Utils.angle(bullet.x, bullet.y, Game.battle.arena.x, Game.battle.arena.y) + -math.rad(self.turnvar)
+                bullet.physics.direction = MathUtils.angle(bullet.x, bullet.y, Game.battle.arena.x, Game.battle.arena.y) + -math.rad(self.turnvar)
                 bullet.rotation = bullet.physics.direction
                 bullet.alpha = 0
                 bullet.scale_x = 0
@@ -71,7 +71,7 @@ function Spiral:update()
         if self.timer == 5 then
             local bullet = self.wave:spawnBullet("mizzle/holydroplet", self.x, self.y)
             if bullet then
-                bullet.physics.direction = Utils.angle(bullet.x, bullet.y, Game.battle.arena.x, Game.battle.arena.y)
+                bullet.physics.direction = MathUtils.angle(bullet.x, bullet.y, Game.battle.arena.x, Game.battle.arena.y)
                 bullet.rotation = bullet.physics.direction
                 bullet.alpha = 0
                 bullet.scale_x = 0
@@ -82,10 +82,12 @@ function Spiral:update()
             Game.battle.timer:lerpVar(bullet, "scale_x", 0, 0.75, 14)
             Game.battle.timer:lerpVar(bullet, "scale_y", 0, 0.75, 14)
 
-            Game.battle.timer:after(5/30, function() 
-		        bullet.physics.speed = (Utils.dist(bullet.x, bullet.y, Game.battle.arena.x, Game.battle.arena.y))/48
+            Game.battle.timer:after(5/30, function()
+                if Game.battle.arena then -- this prevents some crash from occuring on rare occasions when the wave is about to end.
+		            bullet.physics.speed = (MathUtils.dist(bullet.x, bullet.y, Game.battle.arena.x, Game.battle.arena.y))/48
+                end
             end)
-            Game.battle.timer:after(52/30, function() 
+            Game.battle.timer:after(52/30, function()
                 bullet.physics.speed = 0
                 bullet.collidable = false
 
