@@ -48,11 +48,11 @@ function BalthizardShakeController:onShake()
     Assets.stopAndPlaySound("damage")
     if self.shakelastpress == 1 then
         local smoke = BalthizardSmoke(self.enemy.sprite.x + 13 + self.enemy.sprite.headoffsetx - 7, self.enemy.sprite.y + 28 + self.enemy.sprite.headoffsety)
-        smoke.physics.speed = (TableUtils.pick({-3, -4, -5}))/2
+        smoke.physics.speed = TableUtils.pick({-3, -4, -5})
         self.enemy.sprite:addChild(smoke)
     else
         local smoke = BalthizardSmoke(self.enemy.sprite.x + 13 + self.enemy.sprite.headoffsetx + 10, self.enemy.sprite.y + 28 + self.enemy.sprite.headoffsety)
-        smoke.physics.speed = (TableUtils.pick({3, 4, 5}))/2
+        smoke.physics.speed = TableUtils.pick({3, 4, 5})
         self.enemy.sprite:addChild(smoke)
     end
 end

@@ -15,7 +15,7 @@ function BalthizardFire:update()
 end
 
 function BalthizardFire:draw()
-    local fire = Assets.getFrames("battle/bullets/toriel_fire")
+    local fire = Assets.getFrames("battle/bullets/balthizard/toriel_flame")
     local frame = math.floor(Kristal.getTime()) % #fire + 1
     Draw.draw(fire[frame], 0, 0, 0, 1, 1, 8, 10)
 
