@@ -30,7 +30,7 @@ function SpotlightEye:update()
     
         if (self.timer == 14 or (self.timer >= 8 and (self.timer % 2) == 1 and MathUtils.randomInt(3) ~= 1)) then
             self.con = 2
-            self.physics.direction = Utils.angle(self.x, self.y, Game.battle.soul.x, Game.battle.soul.y) + -math.rad(180)
+            self.physics.direction = MathUtils.angle(self.x, self.y, Game.battle.soul.x, Game.battle.soul.y) + -math.rad(180)
             self.physics.speed = 8
             self.physics.speed_x = self.physics.speed_x * 2
             self.physics.speed_y = self.physics.speed_y * 0.5

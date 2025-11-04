@@ -8,7 +8,7 @@ function HolyFireSpawner:init(x, y, bullets, count)
 	self.speedtarg = 6
 	self.widthmod = 1
 	self.count = count or 1
-	self.turn = 1.5 * Utils.sign((self.count % 2) - 0.5)
+	self.turn = 1.5 * MathUtils.sign((self.count % 2) - 0.5)
     self:setHitbox(nil)
     self.sprite.visible = false
 
