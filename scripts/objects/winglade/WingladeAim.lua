@@ -168,9 +168,9 @@ function WingladeAim:update()
             local speed = (3.75 - (0.5 * attackers)) + (0.25 * wave_attackers)
             local friction = -0.035 + 0.015
             for i = -range, range do
-                local spawn_x = spawn_x_middle + math.cos(self.temp_angle + math.rad(155) * Utils.sign(i)) * math.abs(i) * 40
-                local spawn_y = spawn_y_middle + math.sin(self.temp_angle + math.rad(155) * Utils.sign(i)) * math.abs(i) * 40
-                local angle = self.attacker.rotation + math.rad(3 * math.abs(i) + (attackers * 3)) * Utils.sign(i)
+                local spawn_x = spawn_x_middle + math.cos(self.temp_angle + math.rad(155) * MathUtils.sign(i)) * math.abs(i) * 40
+                local spawn_y = spawn_y_middle + math.sin(self.temp_angle + math.rad(155) * MathUtils.sign(i)) * math.abs(i) * 40
+                local angle = self.attacker.rotation + math.rad(3 * math.abs(i) + (attackers * 3)) * MathUtils.sign(i)
                 local speed = (3.75 + math.abs(i) * 3.5 - (0.5 * attackers)) + (0.25 * wave_attackers)
                 local bullet = self:spawnBullet("winglade/batstab", spawn_x, spawn_y, angle, speed, friction)
                 bullet.physics.direction = self.attacker.physics.direction
