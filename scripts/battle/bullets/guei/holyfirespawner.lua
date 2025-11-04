@@ -8,19 +8,16 @@ function HolyFireSpawner:init(x, y, bullets, count)
 	self.speedtarg = 6
 	self.widthmod = 1
 	self.count = count or 1
-	self.turn = math.rad(1.5 * MathUtils.sign((self.count % 2) - 0.5))
+	self.turn = 1.5 * MathUtils.sign((self.count % 2) - 0.5)
     self:setHitbox(nil)
     self.sprite.visible = false
 
-    -- Move the bullet in dir radians (0 = right, pi = left, clockwise rotation)
     self.physics.direction = 0
-    -- Speed the bullet moves (pixels per frame at 30FPS)
     self.physics.speed = 0
     self.subs = {}
 	self.con = 0
 	self.remove_offscreen = false
 end
-
 
 function HolyFireSpawner:onCollide()
 	return
@@ -28,8 +25,8 @@ end
 
 function HolyFireSpawner:onAdd(parent)
     super.onAdd(self, parent)
-	for i = 1, self.bullets do
-		table.insert(self.subs, self.wave:spawnBullet("guei/holyfire", 0, 0, math.rad((360 / self.bullets) * i-1), 0))
+    for i = 1, self.bullets do
+        table.insert(self.subs, self.wave:spawnBullet("guei/holyfire", 0, 0, math.rad((360 / self.bullets) * i-1), 0))
     end
 end
 
@@ -42,7 +39,6 @@ function HolyFireSpawner:onRemove(parent)
 end
 
 function HolyFireSpawner:update()
-    -- For more complicated bullet behaviours, code here gets called every update
     super.update(self)
 
 	self.timer = self.timer + DTMULT
@@ -55,7 +51,7 @@ function HolyFireSpawner:update()
 		else
 			bul.visible = false
 		end
-		bul.angle = bul.angle + self.turn*DTMULT
+		bul.angle = bul.angle + math.rad(self.turn) * DTMULT
 		bul.dist = MathUtils.approach(bul.dist, (15 + (10 * self.bullets)) * self.widthmod, ((self.widthmod * 3) / math.sqrt(bul.dist + 1))*DTMULT)
 		bul.x = self.x + MathUtils.lengthDirX(bul.dist, bul.angle)
 		bul.y = self.y + MathUtils.lengthDirY((bul.dist * 0.66), bul.angle)

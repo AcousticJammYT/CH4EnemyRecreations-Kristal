@@ -296,7 +296,7 @@ function Organikk:getNextWaves()
     end
 end
 
-function EnemyBattler:onDefeatRun(damage, battler)
+function Organikk:onDefeatRun(damage, battler)
 
     self.harmonize = false
     self.showtempmercy = false

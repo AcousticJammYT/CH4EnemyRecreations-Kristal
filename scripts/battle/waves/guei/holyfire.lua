@@ -1,17 +1,12 @@
-local HolyFire, super = Class(Wave)
+local HauntedFlames, super = Class(Wave)
 
-function HolyFire:init()
+function HauntedFlames:init()
     super.init(self)
 
     self.time = 200/30
     self.enemies = self:getAttackers()
 	self.sameattack = #self.enemies
-	self.ratio = 1
-	if #Game.battle.enemies == 2 then
-		self.ratio = 1.6
-	elseif #Game.battle.enemies == 3 then
-		self.ratio = 2.3
-	end
+
 	self.flame_active = false
 	self.btimer = 0
 	self.made = false
@@ -19,18 +14,21 @@ function HolyFire:init()
 	self.stoptimerconds = 0
 end
 
-function HolyFire:onStart()
+function HauntedFlames:onStart()
 	self.flame_active = true
 end
 
-function HolyFire:onEnd()
+function HauntedFlames:onEnd()
 	super.onEnd(self)
 	self.flame_active = false
 end
 
-function HolyFire:update()
+function HauntedFlames:update()
     -- Code here gets called every frame
     super.update(self)
+
+    local ratio = self:getEnemyRatio()
+
 	if not self.flame_active then return end
 	
 	if not self.made then
@@ -39,7 +37,7 @@ function HolyFire:update()
 	end
 	for sameattacker = 0, #self.enemies-1 do
 		if self.stoptimerconds == 0 then
-			if MathUtils.round((self.btimer - 40) % math.ceil(24 * self.ratio))  == 10 * sameattacker then
+			if MathUtils.round((self.btimer - 40) % math.ceil(24 * ratio))  == 10 * sameattacker then
 				local dist = 135 + MathUtils.random(20)
 				local dir
 
@@ -53,11 +51,11 @@ function HolyFire:update()
 
 				self.flames_made = self.flames_made + 1
 				local bullets = 2
-				if self.ratio == 1 then
+				if ratio == 1 then
 					bullets = 3
 				end
 
-				dir = math.rad(dir)
+                dir = math.rad(dir)
 				local a = self:spawnBullet("guei/holyfirespawner", Game.battle.arena.x + MathUtils.lengthDirX(dist, dir), Game.battle.arena.y + MathUtils.lengthDirY(dist * 0.75, dir), bullets, self.flames_made)
 				a.speedtarg = 6
 				a.widthmod = 1.25
@@ -73,4 +71,15 @@ function HolyFire:update()
 	end
 end
 
-return HolyFire
+function HauntedFlames:getEnemyRatio()
+    local enemies = #Game.battle:getActiveEnemies()
+    if enemies <= 1 then
+        return 1
+    elseif enemies == 2 then
+        return 1.6
+    elseif enemies >= 3 then
+        return 2.3
+    end
+end
+
+return HauntedFlames
