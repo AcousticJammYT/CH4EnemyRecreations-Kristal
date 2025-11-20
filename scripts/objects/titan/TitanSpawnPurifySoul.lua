@@ -70,12 +70,14 @@ function TitanSpawnPurifySoul:draw()
         love.graphics.push("all")
         love.graphics.origin()
         love.graphics.translate(0, 0)
-        for i = 0, 20-1 do
+        for i = 1, 20-1 do
             local x = self.start_x - (i * i) - (self.rs * i)
+            local y = 0
             local w = self.start_x + (i * i) + (self.rs * i)
+            local h = 500
 
             Draw.setColor(1, 1, 1, (self.rs / 16) - (i / 20))
-            Draw.rectangle("fill", x, 0, w, 500)
+            Draw.rectangle("fill", x, y, w - x + 1, h - y + 1)
         end
         love.graphics.pop()
 
@@ -101,8 +103,15 @@ function TitanSpawnPurifySoul:draw()
         love.graphics.push("all")
         love.graphics.origin()
         love.graphics.translate(0, 0)
+
+        local x = -10
+        local y = -10
+        local w = 999
+        local h = 999
+
         Draw.setColor(1, 1, 1, self.ds2)
-        Draw.rectangle("fill", -10, -10, 999, 999)
+        Draw.rectangle("fill", x, y, w - x + 1, h - y + 1)
+
         love.graphics.pop()
 
         Draw.setColor(1, 1, 1, 1)
