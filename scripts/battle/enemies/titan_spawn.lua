@@ -34,19 +34,36 @@ function TitanSpawn:init()
 	self.tired_text = nil
 	self.spareable_text = nil
 
+    self:getAct("Check").description = "Consider\nstrategy"
     self:registerAct("Brighten", "Powerup\nlight", "all", 4)
-    self:registerAct("DualHeal", "Heal\nparty",    "all", 16)
+    self:registerAct("DualHeal", "Heal\nparty", {"susie", "ralsei"}, 16)
     self:registerAct("Banish",   "Defeat\nenemy",  nil,   64)
 
-    self.text_override = nil
+    self.dualhealcount = 0
 end
 
 function TitanSpawn:getGrazeTension()
     return 0
 end
 
+function TitanSpawn:getSpareText(battler, success)
+    return "* But, it was not something that\ncan understand MERCY."
+end
+
 function TitanSpawn:isXActionShort(battler)
     return true
+end
+
+-- note about damage to PARTY: if ShadowMantle is equipped, then the next happens:
+-- damage = round(damage * 0.5)
+-- (data.win of chapter 4, scr_damage, line 86)
+-- (adding this to not forget to add it to bullet code)
+function TitanSpawn:getAttackDamage(damage, battler, points)
+    if battler.chara:checkWeapon("blackshard") or battler.chara:checkWeapon("twistedswd") then
+        local dmg = super.getAttackDamage(self, damage, battler, points)
+        return math.ceil(dmg * 10)
+    end
+    return super.getAttackDamage(self, damage, battler, points)
 end
 
 function TitanSpawn:onShortAct(battler, name)
@@ -70,7 +87,71 @@ function TitanSpawn:onAct(battler, name)
                 "* Then, \"[color:yellow]BANISH[color:reset]\" it!",
             }
         end
-
+    elseif name == "Brighten" then
+        for _,party in ipairs(Game.battle.party) do
+            party:flash()
+        end
+        Assets.playSound("boost")
+        local bx, by = Game.battle:getSoulLocation()
+        local soul = Sprite("effects/soulshine", bx + 5.5, by)
+        soul:play(1 / 30, false, function() soul:remove() end)
+        soul:setOrigin(0.5)
+        soul:setScale(2, 2)
+        Game.battle:addChild(soul)
+        return "* "..battler.chara:getName().."'s SOUL shone brighter!"
+    elseif name == "DualHeal" then
+        self.dualhealcount = self.dualhealcount + 1
+        Game.battle:startActCutscene(function(cutscene)
+            local susie = Game.battle:getPartyBattler("susie")
+            local ralsei = Game.battle:getPartyBattler("ralsei")
+            local canproceed = false
+            local hashealed = false
+            Game.battle.timer:after(7 / 30, function()
+                susie:setAnimation("heal_charge") -- Susie starts the animation with the effects
+                Assets.playSound("boost")
+                battler:flash()
+                susie:flash()
+                ralsei:flash()
+                local bx, by = Game.battle:getSoulLocation()
+                local soul = Sprite("effects/soulshine", bx + 5.5, by)
+                soul:play(1 / 30, false, function() soul:remove() end)
+                soul:setOrigin(0.5)
+                soul:setScale(2, 2)
+                Game.battle:addChild(soul)
+            end)
+            Game.battle.timer:after(24 / 30, function()
+                ralsei:setAnimation("battle/spell_ready") -- Ralsei starts the animation after a pause
+                canproceed = true
+            end)
+            cutscene:text("* Your SOUL shined its power on\nRALSEI and SUSIE!")
+            cutscene:wait(function() return canproceed == true end)
+            susie:setAnimation("heal_end_short", function() susie:setAnimation("battle/idle") end)
+            ralsei:setAnimation("battle/spell", function()
+                for _,party in ipairs(Game.battle.party) do
+                    local healnum = MathUtils.round((susie.chara:getStat("magic") + ralsei.chara:getStat("magic")) * 6)
+                    Game.battle:applyHealBonuses(healnum, "susie") -- ralsei or susie??? Maybe needs 2 heal bonus appliers?????
+                    local healmultiplier = 1.5
+                    if self.dualhealcount == 2 then
+                        healmultiplier = 1
+                    elseif self.dualhealcount == 3 then
+                        healmultiplier = 0.8
+                    elseif self.dualhealcount == 4 then
+                        healmultiplier = 0.3
+                    elseif self.dualhealcount > 4 then
+                        healmultiplier = 0.2
+                    end
+                    party:heal(MathUtils.round(healnum * healmultiplier))
+                end
+                hashealed = true
+            end)
+            if self.dualhealcount < 4 then
+                cutscene:text("* Susie and Susie cast DUAL HEAL!\nEffectiveness of DUAL HEAL has\nlowered!")
+            else
+                cutscene:text("* Susie and Susie cast DUAL HEAL!")
+            end
+            cutscene:wait(function() return hashealed == true end)
+        end)
+        return
     elseif name == "Banish" then
         battler:setAnimation("act")
         Game.battle:startCutscene(function(cutscene)
@@ -92,7 +173,6 @@ function TitanSpawn:onAct(battler, name)
             end)
         end)
         return
-
     elseif name == "Standard" then
         Game.battle:startActCutscene(function(cutscene)
             cutscene:text("* "..battler.chara:getName().." tried to \"[color:yellow]ACT[color:reset]\"...\n* But, the enemy couldn't understand!")
@@ -111,7 +191,7 @@ function TitanSpawn:update()
 end
 
 function TitanSpawn:onSpared()
-    --self:recruitMessage("purified")
+    self:statusMessage("msg", "purified")
 end
 
 function TitanSpawn:onHurt(damage, battler)
@@ -121,8 +201,6 @@ function TitanSpawn:onHurt(damage, battler)
 end
 
 function TitanSpawn:onDefeat(damage, battler)
-	super.onDefeat(self, damage, battler)
-
     self:onDefeatFatal(damage, battler)
 end
 
