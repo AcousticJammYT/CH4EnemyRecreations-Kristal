@@ -361,11 +361,11 @@ function Mizzle:update()
         self.siner = self.siner + (1 / 6) * DTMULT
         self.sprite.y = (math.sin(self.siner * 0.5)) * 5
         if self.bubble then
+            local spr = self.sprite or self
+            local x, y = spr:getRelativePos(0, spr.height/2, Game.battle)
             if self.tired then
-                self.bubble.y = self.y-56
+                self.bubble.y = y - 8
             else
-                local spr = self.sprite or self
-                local x, y = spr:getRelativePos(0, spr.height/2, Game.battle)
                 self.bubble.y = y
             end
         end

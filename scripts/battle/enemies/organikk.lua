@@ -123,19 +123,20 @@ function Organikk:onAct(battler, name)
 
         elseif battler.chara.id == "ralsei" then
             Game.battle:startActCutscene(function(cutscene)
-                cutscene:text("* Ralsei sang sweetly!")
                 Game.battle.music:pause()
 
+                local singy
                 if self.lullabied == 0 then
-                    Assets.playSound("ralseising1")
+                    singy = Assets.playSound("ralseising1")
                     self.lullabied = 1
                 else
-                    Assets.playSound("ralseising2")
+                    singy = Assets.playSound("ralseising2")
                     self.lullabied = 0
                 end
 
                 battler:setAnimation("sing")
-                cutscene:wait(4)
+                cutscene:text("* Ralsei sang sweetly!")
+                singy:stop()
                 Game.battle.music:resume()
                 self:addMercy(50)
             end)
