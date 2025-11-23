@@ -1,7 +1,10 @@
+---@class GreenBlob : Bullet
+---@overload fun(...) : GreenBlob
 local GreenBlob, super = Class(Bullet)
 
 function GreenBlob:init(x, y)
     super.init(self, x, y, "battle/bullets/titan/darkshape_transform")
+    self.sprite:stop()
 
     self.layer = BATTLE_LAYERS["top"]
     self.collidable = false
@@ -54,7 +57,7 @@ function GreenBlob:onAdd(parent)
     self.physics.direction = Utils.angle(self.x, self.y, Game.battle.soul.x, Game.battle.soul.y) + -math.rad(180)
     self.physics.speed = self.prime_speed
 
-    Assets.playSound("hurt_bc", nil, 0.5)
+    --Assets.playSound("hurt_bc", nil, 0.5)
 end
 
 function GreenBlob:update()

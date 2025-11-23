@@ -120,4 +120,9 @@ function MathUtils.rotateTowards(a, b, t)
     end
 end
 
+function MathUtils.angleLerp(a, b, t)
+    local diff = MathUtils.angleDiff(b, a)
+    return a + MathUtils.lerp(0, diff, t)
+end
+
 return MathUtils
