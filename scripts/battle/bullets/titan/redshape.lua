@@ -77,7 +77,7 @@ function RedShape:draw()
 	love.graphics.rotate(-self.rotation)
     Draw.draw(self.eye_tex, 0, 0, 0, 1, 1, 25, 24)
     local hdir = MathUtils.angle(self.x, self.y, Game.battle.soul.x, Game.battle.soul.y)
-    Draw.draw(self.iris_tex, MathUtils.lengthDirX(2, hdir), MathUtils.lengthDirY(2, hdir) + 1, 0, 1, 1, 1, 1)
+    Draw.draw(self.iris_tex, MathUtils.lengthDirX(2, hdir), MathUtils.lengthDirY(2, -hdir) + 1, 0, 1, 1, 1, 1)
 end
 
 return RedShape
