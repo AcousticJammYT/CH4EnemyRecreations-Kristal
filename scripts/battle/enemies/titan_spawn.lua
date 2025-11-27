@@ -19,7 +19,9 @@ function TitanSpawn:init()
 
     self.can_freeze = false
 
-    self.waves = {}
+    self.waves = {
+		"debugging/darkshape_test"
+	}
 
     self.text = {
         "* You hear your heart beating in \nyour ears.",
@@ -98,6 +100,7 @@ function TitanSpawn:onAct(battler, name)
         soul:setOrigin(0.5)
         soul:setScale(2, 2)
         Game.battle:addChild(soul)
+		Game.battle.encounter.light_radius = 63
         return "* "..battler.chara:getName().."'s SOUL shone brighter!"
     elseif name == "DualHeal" then
         self.dualhealcount = self.dualhealcount + 1
@@ -164,7 +167,7 @@ function TitanSpawn:onAct(battler, name)
             soul.color = Game:getPartyMember(Game.party[1].id).soul_color or { 1, 0, 0 }
             soul.layer = 501
 
-            local wait = function() return soul.t >= 550 end
+            local wait = function() return soul.t >= 500 end
             cutscene:wait(wait)
             cutscene:after(function()
                 if #Game.battle.enemies == 0 then
@@ -191,7 +194,9 @@ function TitanSpawn:update()
 end
 
 function TitanSpawn:onSpared()
-    self:statusMessage("msg", "purified")
+	local recruit = RecruitMessage("purified", 500, self.y - 40)
+	recruit.start_x = 500
+	Game.battle:addChild(recruit)
 end
 
 function TitanSpawn:onHurt(damage, battler)

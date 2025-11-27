@@ -7,6 +7,7 @@ function GreenBlob:init(x, y)
     self.sprite:stop()
 
     self.layer = BATTLE_LAYERS["top"]
+	self:setScale(1,1)
     self.collidable = false
     self.grazed = true
     self.size = 2
@@ -23,9 +24,7 @@ function GreenBlob:init(x, y)
     self.b = 1
 end
 
-function GreenBlob:onAdd(parent)
-    super.onAdd(self, parent)
-
+function GreenBlob:prime()
     local size_to = 0.6
     if self.size == 1 then
         size_to = 0.4
@@ -54,18 +53,25 @@ function GreenBlob:onAdd(parent)
         end)
     end
     
-    self.physics.direction = Utils.angle(self.x, self.y, Game.battle.soul.x, Game.battle.soul.y) + -math.rad(180)
+    self.physics.direction = MathUtils.angle(self.x, self.y, Game.battle.soul.x, Game.battle.soul.y) + -math.rad(180)
     self.physics.speed = self.prime_speed
 
     --Assets.playSound("hurt_bc", nil, 0.5)
 end
 
+function GreenBlob:partiallyPrime()
+    Game.battle.timer:lerpVar(self, "scale_x", self.scale_x, 1, 20)
+    Game.battle.timer:lerpVar(self, "scale_y", self.scale_y, 1, 20)
+    Game.battle.timer:lerpVar(self, "r", self.r, 0.5, 20)
+    Game.battle.timer:lerpVar(self, "g", self.g, 0.5, 20)
+    Game.battle.timer:lerpVar(self, "b", self.b, 0.5, 20)
+end
 function GreenBlob:update()
     super.update(self)
 	
     self.image_index = self.image_index + (1/(30 * self.image_speed)) * DTMULT
 
-    self:setColor({255 * self.r, 255 * self.g, 255 * self.b})
+    self:setColor({self.r, self.g, self.b})
     self.sprite:setFrame(1 + math.floor(self.image_index % 6))
     self.physics.speed = self.physics.speed * 0.85
 	
