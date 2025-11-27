@@ -12,6 +12,12 @@ function TitanSpawn:init()
     self.titan_spawn_2 = self:addEnemy("titan_spawn", 500, 290)
 	
     self.reduced_tension = true
+	self.light_radius = 48
+end
+
+function TitanSpawn:onTurnEnd()
+    super.onTurnEnd(self)
+	self.light_radius = 48
 end
 
 function TitanSpawn:getPartyPosition(index)

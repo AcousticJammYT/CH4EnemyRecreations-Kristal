@@ -95,11 +95,11 @@ function MathUtils.lerpEaseInOut(from, to, value, ease_type)
 end
 
 function MathUtils.lengthDirX(length, dir)
-    return math.cos(-dir) * length
+    return math.cos(dir) * length
 end
 
 function MathUtils.lengthDirY(length, dir)
-    return math.sin(-dir) * length
+    return math.sin(dir) * length
 end
 
 function MathUtils.approachCurve(val, target, amount)

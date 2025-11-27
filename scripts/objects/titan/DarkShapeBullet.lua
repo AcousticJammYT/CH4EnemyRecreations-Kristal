@@ -121,19 +121,19 @@ function DarkShapeBullet:chaseHeart()
         self.myspeed = MathUtils.approach(self.myspeed, 0.7 + (1 - self.light), 0.15 * self.speedfactor * self.speed_max_multiplier)
         self.light = MathUtils.approach(self.light, 1, self.light_rate)
 
-        --with (obj_darkshape_manager)
-        --{
-        --    ominous_decline = false
-        --    ominous_volume = scr_approach(ominous_volume, 1, (1 - ominous_volume) * 0.15)
-        --}
+        if Game.battle.soul.ominous_loop then
+			Game.battle.soul.ominous_decline = false
+			Game.battle.soul.ominous_volume = MathUtils.approach(Game.battle.soul.ominous_volume, 1, ((1 - Game.battle.soul.ominous_volume) * 0.15) * DTMULT)
+        end
 
         -- Spawn particles while bullet is shrinking.
-        if MathUtils.randomInt(3) then
-            --local particle = Game.battle:addChild(TitanSpawnParticleGeneric(self.x + MathUtils.random(-12, 12), self.y + MathUtils.random(-12, 12)))
-            --particle:setColor(COLORS.white)
-            --particle.physics.direction = Utils.angle(hx, hy, particle.x, particle.y)
-            --particle.physics.speed = 1 + MathUtils.random(3)
-            --particle.shrink_rate = 0.2
+        if MathUtils.randomInt(2) == 0 then
+            local particle = Game.battle:addChild(TitanSpawnParticleGeneric(self.x + MathUtils.random(-12, 12), self.y + MathUtils.random(-12, 12)))
+            particle:setColor(COLORS.white)
+            particle.physics.direction = MathUtils.angle(hx, hy, particle.x, particle.y)
+            particle.physics.speed = 1 + MathUtils.random(3)
+            particle.shrink_rate = 0.2
+			particle.layer = self.layer
         end
     else
         self.myspeed = MathUtils.approach(self.myspeed, self.speed_max * self.speed_max_multiplier, self.accel * self.speed_max_multiplier * (1 - self.light))
@@ -153,14 +153,20 @@ function DarkShapeBullet:destroy()
             tp_blob.size = 2
         end
     end
+	
+	tp_blob:prime()
 
     self:remove()
 end
 
 function DarkShapeBullet:update()
-    ---------------
-    --Step_0 Code--
-    ---------------
+	self:updateStepOne()
+	self:updateStepZero()
+	self:updateDrawZero()
+    super.update(self)
+end
+
+function DarkShapeBullet:updateStepZero()
     if self.fast_timer >= 1 then
         self.timer = self.timer + self.fastval * DTMULT
         self.fast_timer = self.fast_timer - DTMULT
@@ -178,7 +184,7 @@ function DarkShapeBullet:update()
         self.alpha = MathUtils.approach(self.alpha, 1, 0.025)
     
         if self.alpha == 1 then
-            self.physics.direction = Utils.angle(self.x, self.y, Game.battle.soul.x, Game.battle.soul.y)
+            self.physics.direction = MathUtils.angle(self.x, self.y, Game.battle.soul.x, Game.battle.soul.y)
         end
     end
 
@@ -229,26 +235,24 @@ function DarkShapeBullet:update()
     if self.can_destroy and self.light == 1 then
         self:destroy()
     end
+end
 
-    ---------------
-    --Step_1 Code--
-    ---------------
+function DarkShapeBullet:updateStepOne()
     local eff_speed = self.myspeed * (1 + (math.sin(self.true_timer * 0.15) * 0.6))
     local hx, hy = Game.battle.soul.x, Game.battle.soul.y
-    self.x = self.x + MathUtils.lengthDirX(eff_speed * 1, math.rad(self.physics.direction)) * DTMULT
-    self.y = self.y + MathUtils.lengthDirY(eff_speed * 1, math.rad(self.physics.direction)) * DTMULT
+    self.x = self.x + MathUtils.lengthDirX(eff_speed * 1, self.physics.direction) * DTMULT
+    self.y = self.y + MathUtils.lengthDirY(eff_speed * 1, self.physics.direction) * DTMULT
 
     if self.updateimageangle then
         self.rotation = self.physics.direction
     end
 
     local turning_mult = 0.5 - (math.sin(self.true_timer * 0.15) * 0.5)
-    local anglediff = MathUtils.angleDiff(self.physics.direction, Utils.angle(self.x, self.y, hx, hy))
-    self.physics.direction = self.physics.direction - MathUtils.clamp(Utils.sign(anglediff) * self.tracking_val * turning_mult, -math.abs(anglediff), math.abs(anglediff))
+    local anglediff = MathUtils.angleDiff(self.physics.direction, MathUtils.angle(self.x, self.y, hx, hy))
+    self.physics.direction = self.physics.direction - MathUtils.clamp(MathUtils.sign(anglediff) * self.tracking_val * turning_mult, -math.abs(anglediff), math.abs(anglediff))
+end
 
-    ---------------
-    --Draw_0 Code--
-    ---------------
+function DarkShapeBullet:updateDrawZero()
     local xoff = 0
     local yoff = 0
     if self.shakeme then
@@ -272,8 +276,6 @@ function DarkShapeBullet:update()
     else
         self.highlight.amount = 0
     end
-
-    super.update(self)
 end
 
 return DarkShapeBullet

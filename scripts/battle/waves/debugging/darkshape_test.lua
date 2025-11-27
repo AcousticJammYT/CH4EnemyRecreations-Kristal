@@ -8,6 +8,9 @@ end
 
 function DarkShapeTest:onStart()
     Game.battle:swapSoul(FlashlightSoul())
+	self.spawn_attack_loop = Assets.newSound("spawn_attack")
+    self.spawn_attack_loop:setLooping(true)
+	self.spawn_attack_loop:play()
 
     self.timer:everyInstant(15/30, function()
         local arena = Game.battle.arena
@@ -24,6 +27,13 @@ function DarkShapeTest:onStart()
 
         self:spawnBullet("titan/redshape", arena.x + MathUtils.lengthDirX(tempdist, tempdir), arena.y + MathUtils.lengthDirY(tempdist, tempdir))
     end)
+end
+
+function DarkShapeTest:onEnd()
+    if Game.battle.soul.ominous_loop then
+		Game.battle.soul.ominous_loop:stop()
+	end
+	self.spawn_attack_loop:stop()
 end
 
 return DarkShapeTest
