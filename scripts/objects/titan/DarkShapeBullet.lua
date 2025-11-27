@@ -108,7 +108,7 @@ function DarkShapeBullet:doPushBack()
         if (bullet.id ~= self and MathUtils.dist(bullet.x, bullet.y, self.x, self.y) < self.pushback_radius) then
             local tempangle = Utils.angle(self.x, self.y, bullet.x, bullet.y)
             bullet.x = bullet.x + MathUtils.lengthDirX(1, tempangle) * DTMULT
-            bullet.y = bullet.y + MathUtils.lengthDirY(1, tempangle) * DTMULT
+            bullet.y = bullet.y + MathUtils.lengthDirY(1, -tempangle) * DTMULT
         end
     end
 end
@@ -241,7 +241,7 @@ function DarkShapeBullet:updateStepOne()
     local eff_speed = self.myspeed * (1 + (math.sin(self.true_timer * 0.15) * 0.6))
     local hx, hy = Game.battle.soul.x, Game.battle.soul.y
     self.x = self.x + MathUtils.lengthDirX(eff_speed * 1, self.physics.direction) * DTMULT
-    self.y = self.y + MathUtils.lengthDirY(eff_speed * 1, self.physics.direction) * DTMULT
+    self.y = self.y + MathUtils.lengthDirY(eff_speed * 1, -self.physics.direction) * DTMULT
 
     if self.updateimageangle then
         self.rotation = self.physics.direction
