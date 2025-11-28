@@ -13,6 +13,7 @@ function TitanSpawn:init()
 	
     self.reduced_tension = true
 	self.light_radius = 48
+	self.unleash_threshold = 64
 end
 
 function TitanSpawn:onTurnEnd()

@@ -42,6 +42,21 @@ function TitanSpawn:init()
     self:registerAct("Banish",   "Defeat\nenemy",  nil,   64)
 
     self.dualhealcount = 0
+
+	self.t_siner = 0
+    self.banish_act_index = 4
+end
+
+function TitanSpawn:update()
+    super.update(self)
+    if Game.battle.state == "MENUSELECT" and Game.tension >= 64 then
+        self.t_siner = self.t_siner + (1 * DTMULT)
+        if Game.battle.menu_items[self.banish_act_index] then
+            Game.battle.menu_items[self.banish_act_index].color = function()
+                 return (ColorUtils.mergeColor(COLORS.yellow, COLORS.white, 0.5 + (math.sin(self.t_siner / 4) * 0.5)))
+            end
+        end
+    end
 end
 
 function TitanSpawn:getGrazeTension()
@@ -187,10 +202,6 @@ end
 
 function TitanSpawn:getEnemyDialogue()
     return false
-end
-
-function TitanSpawn:update()
-    super.update(self)
 end
 
 function TitanSpawn:onSpared()
