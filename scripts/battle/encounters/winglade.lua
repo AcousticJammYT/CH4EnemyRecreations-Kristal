@@ -5,7 +5,7 @@ function Winglade:init()
 
     self.text = "* Winglade cuts in!"
 
-    self.music = "battle"
+    self.music = "ch4_battle"
     self.background = true
 
     self:addEnemy("winglade", 520, 140)

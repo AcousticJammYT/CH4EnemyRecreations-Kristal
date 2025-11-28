@@ -55,7 +55,7 @@ function Cloud:update()
             self.alpha = self.alpha + 0.2 * DTMULT
         end
         if(self.fuzzy == false) then
-            self.sprite:setSprite("bullets/balthizard/could_fuzzy2")
+            self.sprite:setSprite("battle/bullets/balthizard/could_fuzzy2")
             self.sprite:play(0.5, true)
             self.fuzzy = true
         end
