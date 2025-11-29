@@ -13,7 +13,7 @@ function PendulumSplash:update()
 	if self.lifetime <= 2 then
 		self.splash_size = self.splash_size + 16 * DTMULT
 	else
-		self.splash_size = math.max(0, ((self.splash_size * 0.96) - 3) * DTMULT)
+		self.splash_size = math.max(0, (self.splash_size * 0.96) - (3*DTMULT))
 	end
 end
 

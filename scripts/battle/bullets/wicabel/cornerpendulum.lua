@@ -88,14 +88,14 @@ function CornerPendulum:update()
 		local splash = self.wave:spawnObject(PendulumSplash(), self.x, self.y)
 		splash.layer = self.layer
 		self.wave:spawnBullets(true, self.x, self.y)
-		Game.battle.timer:after(3/30, function()
+		Game.battle.timer:after(2.5/30, function()
 			local success = false
 			if #Game.battle:getActiveEnemies() <= 2 then
 				success = true
 			end
 			self.wave:spawnBullets(success, self.x, self.y)
 		end)
-		Game.battle.timer:after(6/30, function()
+		Game.battle.timer:after(5.5/30, function()
 			local success = false
 			if #Game.battle:getActiveEnemies() <= 1 then
 				success = true
