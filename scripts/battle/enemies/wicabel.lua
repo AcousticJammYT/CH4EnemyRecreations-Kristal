@@ -15,7 +15,7 @@ function Wicabel:init()
     self.spare_points = 10
 
     self.waves = {
-        --"wicabel/penduluma"
+        "wicabel/penduluma"
     }
 
     self.dialogue = {
