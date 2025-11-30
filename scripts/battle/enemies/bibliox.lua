@@ -15,7 +15,7 @@ function Bibliox:init()
     self.spare_points = 10
 
     self.waves = {
-        --"bibliox/book_attack"
+        "bibliox/book_attack"
     }
 
     self.dialogue = {
