@@ -3,7 +3,7 @@ local DarkShapeTest, super = Class(Wave)
 function DarkShapeTest:init()
     super.init(self)
 
-    self.time = -1
+    self.time = 360/30
 end
 
 function DarkShapeTest:onStart()

@@ -60,14 +60,14 @@ function DarkShapeManager:onRemoveFromStage(stage)
 end
 
 function DarkShapeManager:patternToUse(pattern)
-    self.pattern = pattern or “default”
+    self.pattern = pattern or "default"
     return self.pattern
 end
 
 -- This ONLY includes the attack patterns that are used by the Titan Spawn enemies.
 -- Any attack patterns used by the Titan *boss* have been excluded from this object for obvious reasons.
 function DarkShapeManager:createPattern()
-    if self.pattern == “default” then
+    if self.pattern == "default" then
         if not self.noise_played then
             self.spawn_attack_loop:play()
             self.noise_played = true
@@ -78,7 +78,7 @@ function DarkShapeManager:createPattern()
             local tempdist = 150 + MathUtils.randomInt(50)
             local x, y = Game.battle.arena.x + MathUtils.lengthDirX(tempdist, math.rad(tempdir)), Game.battle.arena.y + MathUtils.lengthDirY(tempdist, math.rad(tempdir))
 
-            if (self.spawn_count % 5) == 4 then
+            if (self.spawn_counter % 5) == 4 then
                 local newbullet = self.wave:spawnBullet("titan/redshape", x, y)
                 newbullet.physics.direction = MathUtils.angle(newbullet.x, newbullet.y, Game.battle.soul.x, Game.battle.soul.y)
                 newbullet.rotation = newbullet.physics.direction
@@ -89,7 +89,7 @@ function DarkShapeManager:createPattern()
             self.spawn_counter = self.spawn_counter + 1
         end
 
-    elseif self.pattern == “intro” then
+    elseif self.pattern == "intro" then
         if not self.noise_played then
             self.spawn_attack_loop:play()
             self.noise_played = true
@@ -107,7 +107,7 @@ function DarkShapeManager:createPattern()
             self.spawn_counter = self.spawn_counter + 1
         end
 
-    elseif self.pattern == “speedup” then
+    elseif self.pattern == "speedup" then
         if not self.noise_played then
             self.spawn_attack_loop:play()
             self.noise_played = true
@@ -122,11 +122,11 @@ function DarkShapeManager:createPattern()
             local tempdir = self.random_offset + math.deg(math.tan(self.speedup_timer * 0.0375))
             if MathUtils.randomInt(8) ~= 0 then
                 tempdir = tempdir + 180
-                local tempdist = 120 + MathUtils.randomInt(50)
             end
+            local tempdist = 120 + MathUtils.randomInt(50)
             local x, y = Game.battle.arena.x + MathUtils.lengthDirX(tempdist, math.rad(tempdir)), Game.battle.arena.y + MathUtils.lengthDirY(tempdist, math.rad(tempdir))
 
-            if (self.spawn_count % 5) == 4 then
+            if (self.spawn_counter % 5) == 4 then
                 local newbullet = self.wave:spawnBullet("titan/redshape", x, y)
                 newbullet.physics.direction = MathUtils.angle(newbullet.x, newbullet.y, Game.battle.soul.x, Game.battle.soul.y)
                 newbullet.rotation = newbullet.physics.direction
