@@ -18,9 +18,11 @@ function CornerPendulum:init(x, y)
 	self.swingdistance = MathUtils.dist(self.x, self.y, self.swingpoint_x, self.swingpoint_y)
 	self.vertical_mirroring = 1
     self.collidable = false
+	self.remove_offscreen = false
 	self.destroy_on_hit = false
 	self.damage = 65
 	self.tp = 1.6
+	self.accel = 0
 end
 
 function CornerPendulum:update()
@@ -31,40 +33,33 @@ function CornerPendulum:update()
 		self.collidable = true
 	end
 	
-	local shaftdir = MathUtils.angle(self.x, self.y, self.swingpoint_x, self.swingpoint_y)
-	local accel, swingdir
-	
+	-- The code here isn't 1:1 with DELTARUNE
+	-- but this is the only way I could get it mostly accurate	
+	local dirwrap = math.pi*2
+	local shaftdir = -MathUtils.angle(self.x, self.y, self.swingpoint_x, self.swingpoint_y)
+	local shaftdir_hack, accel, swingdir
 	if self.vertical_mirroring == 1 then
-		if shaftdir < math.rad(90) or shaftdir > math.rad(270) then
+		if self.side == 1 then
 			swingdir = shaftdir - math.rad(90)
 		else
 			swingdir = shaftdir + math.rad(90)
 		end
-		accel = MathUtils.lengthDirY(0.5, -swingdir)
+		accel = MathUtils.lengthDirY(0.5, swingdir)
 	elseif self.vertical_mirroring == -1 then
-		if shaftdir < math.rad(90) or shaftdir > math.rad(270) then
-			swingdir = shaftdir + math.rad(90)
-		else
+		if self.side == 1 then
 			swingdir = shaftdir - math.rad(90)
-		end	
-		accel = -MathUtils.lengthDirY(0.5, -swingdir)
+		else
+			swingdir = shaftdir + math.rad(90)
+		end
+		accel = -MathUtils.lengthDirY(0.5, swingdir)
 	end
-	self.physics.speed_x = self.physics.speed_x + MathUtils.lengthDirX(accel*DTMULT, -swingdir)
-	self.physics.speed_y = self.physics.speed_y + MathUtils.lengthDirY(accel*DTMULT, -swingdir)
+	self.accel = self.accel + accel * DTMULT
+	self.physics.speed_x = MathUtils.lengthDirX(self.accel, swingdir) * DTMULT
+	self.physics.speed_y = MathUtils.lengthDirY(self.accel, swingdir) * DTMULT
 	
-	if swingdir < self.physics.direction - math.rad(180) then
-		swingdir = swingdir + math.rad(360)
-	end
-	if swingdir > self.physics.direction + math.rad(180) then
-		swingdir = swingdir - math.rad(360)
-	end	
-	if self.physics.direction > swingdir - math.rad(90) and self.physics.direction < swingdir + math.rad(90) then
-		self.physics.direction = swingdir
-	else
-		self.physics.direction = swingdir - math.rad(180)
-	end
-	self.x = self.swingpoint_x - MathUtils.lengthDirX(self.swingdistance, -shaftdir)
-	self.y = self.swingpoint_y - MathUtils.lengthDirY(self.swingdistance, -shaftdir)
+	self.physics.direction = swingdir
+	self.x = self.swingpoint_x - MathUtils.lengthDirX(self.swingdistance, shaftdir)
+	self.y = self.swingpoint_y - MathUtils.lengthDirY(self.swingdistance, shaftdir)
 	self.sprite.rotation = MathUtils.angle(self.swingpoint_x, self.swingpoint_y, self.x, self.y) - math.rad(90)
 	
 	local direction = math.deg(self.physics.direction)

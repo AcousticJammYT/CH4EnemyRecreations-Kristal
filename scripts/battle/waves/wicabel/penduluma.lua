@@ -65,17 +65,17 @@ function CornerPendulums:update()
 			local shaftdist
 			if vmirror == 1 then
 				shaftdist = MathUtils.dist(pendulum.x, pendulum.y, pendulum.swingpoint_x, pendulum.swingpoint_y)
-				pendulum.x = pendulum.swingpoint_x + MathUtils.lengthDirX(shaftdist, math.rad(-(270 - (tilt * side))))
-				pendulum.y = pendulum.swingpoint_y + MathUtils.lengthDirY(shaftdist, math.rad(-(270 - (tilt * side))))
-				pendulum.physics.speed_y = -3
+				pendulum.x = pendulum.swingpoint_x + MathUtils.lengthDirX(shaftdist, math.rad(270 - (tilt * side)))
+				pendulum.y = pendulum.swingpoint_y + MathUtils.lengthDirY(shaftdist, math.rad(270 - (tilt * side)))
+				pendulum.accel = -3
 			elseif vmirror == -1 then
 				pendulum.vertical_mirroring = -1
 				pendulum.swingpoint_y = arena.bottom + 16 + 16
 				pendulum.swingdistance = MathUtils.dist(pendulum.x, pendulum.y, pendulum.swingpoint_x, pendulum.swingpoint_y)
 				shaftdist = MathUtils.dist(pendulum.x, pendulum.y, pendulum.swingpoint_x, pendulum.swingpoint_y)
-				pendulum.x = pendulum.swingpoint_x + MathUtils.lengthDirX(shaftdist, math.rad(-(90 + (tilt * side))))
-				pendulum.y = pendulum.swingpoint_y + MathUtils.lengthDirY(shaftdist, math.rad(-(90 + (tilt * side))))
-				pendulum.physics.speed_y = 3
+				pendulum.x = pendulum.swingpoint_x + MathUtils.lengthDirX(shaftdist, math.rad(90 + (tilt * side)))
+				pendulum.y = pendulum.swingpoint_y + MathUtils.lengthDirY(shaftdist, math.rad(90 + (tilt * side)))
+				pendulum.accel = 3
 			end
 			table.insert(self.pendulums, pendulum)
 		end
