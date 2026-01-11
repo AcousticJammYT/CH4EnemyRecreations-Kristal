@@ -16,4 +16,10 @@ function HolyDroplet:update()
     super.update(self)
 end
 
+function HolyDroplet:onGraze(success)
+	if success then
+		Assets.stopAndPlaySound("graze") -- Stop graze sound spam
+	end
+end
+
 return HolyDroplet 
