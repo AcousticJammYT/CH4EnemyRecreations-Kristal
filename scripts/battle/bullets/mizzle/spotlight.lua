@@ -7,12 +7,17 @@ function SpotlightBullet:init(x, y)
     self:setLayer(BATTLE_LAYERS["below_soul"])
     self:setScale(1.3, 1.3)
     self:setOrigin(0.5, 0.5)
-    self.collider = CircleCollider(self, 0, 0, 40)
+    self.collider = CircleCollider(self, 25, 25, 30)
+	self.can_graze = false
     self.alpha = 0.2
 
     self.timer = 0
 
     self.made = false
+end
+
+function SpotlightBullet:onCollide()
+	return
 end
 
 function SpotlightBullet:update()
@@ -22,14 +27,10 @@ function SpotlightBullet:update()
         Game.battle.timer:after(8/30, function()
             Game.battle.timer:lerpVar(self, "alpha", 0.2, 0.4, 16)
         end)
+		self.made = true
     end
 
     self.timer = self.timer + DTMULT
-
-    if Game.battle.wave_timer >= Game.battle.wave_length - 1/30 then
-        self:remove()
-    end
-
     --flickering effect
     if self.timer % 2 < 1 then
         self.visible = true

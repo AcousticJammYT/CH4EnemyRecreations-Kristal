@@ -42,7 +42,7 @@ function HauntedFlames:update()
 				local dir
 
 				if self.sameattack == 1 then
-					dir = 15 + MathUtils.random(30) + (60 * MathUtils.randomInt(2))
+					dir = 15 + MathUtils.random(30) + (60 * MathUtils.randomInt(3))
 				elseif self.sameattack == 2 then
 					dir = 15 + MathUtils.random(30) + (120 * sameattacker)
 				else

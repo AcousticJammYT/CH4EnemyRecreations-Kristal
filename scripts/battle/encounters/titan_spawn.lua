@@ -44,4 +44,17 @@ function TitanSpawn:getPartyPosition(index)
     end
 end
 
+function TitanSpawn:onBattleStart(battler)
+	if Game:hasPartyMember("kris") then
+		self.default_xactions = false
+		for _,battler in ipairs(Game.battle.party) do
+			if battler.chara.id == "susie" then
+				Game.battle:registerXAction("susie", "WakeKris", "Revive\nKris", 16)
+			elseif battler.chara.id == "ralsei" then
+				Game.battle:registerXAction("ralsei", "ReviveKris", "Revive\nKris", 16)
+			end
+		end
+	end
+end
+
 return TitanSpawn

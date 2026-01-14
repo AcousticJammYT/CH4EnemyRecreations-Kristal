@@ -41,11 +41,11 @@ function DarkShapeBullet:init(x, y, texture, shrink_texture)
     self.pushback_radius = 48
 
     -- Scaling variables
-    self.xscale = 0
-    self.yscale = 0
-    self.xface = 1
-    self.yface = 1
-    self.scalefactor = 1
+    self.xscale = 0                         -- Default scaling value for x.
+    self.yscale = 0                         -- Default scaling value for y.
+    self.xface = 1                          -- Facing scaling value for x. Set to "-1" to make it face the opposite direction on its x axis.
+    self.yface = 1                          -- Facing scaling value for y. Set to "-1" to make it face the opposite direction on its y axis.
+    self.scalefactor = 1                    -- The target scale value.
 
     self._texture = texture                 -- Callback for the bullet's default texture.
     self._shrink_texture = shrink_texture   -- Callback for the bullet's shrinking texture.
@@ -63,10 +63,17 @@ function DarkShapeBullet:init(x, y, texture, shrink_texture)
     self.highlight:setColor(1, 1, 1)
     self.highlight.amount = 0
 
+    -- Suble wave effect used when the bullet is spawning.
+    self.wave = self:addFX(ShaderFX("darkshape_wave", {
+        ["wave_timer"] = function() return self.timer end,
+        ["wave_mag"] = function() return 4 - (self.alpha * 4) end,
+        ["texsize"] = {SCREEN_WIDTH, SCREEN_HEIGHT}
+    }), "wave")
+
     self.shakeme = false
     self.timer = 0
     self.fast_timer = 0
-    self.ypush = 0
+    self.ypush = 0                          -- Unused variable(?)
 end
 
 function DarkShapeBullet:onAdd(parent)
@@ -79,6 +86,8 @@ function DarkShapeBullet:getDebugInfo()
     local info = super.getDebugInfo(self)
     table.insert(info, "Speed: " .. self.physics.speed)
     table.insert(info, "MySpeed: " .. self.myspeed)
+    table.insert(info, "Scale X: " .. self.scale_x)
+    table.insert(info, "Scale Y: " .. self.scale_y)
     table.insert(info, "Light Exposure: " .. self.light)
     return info
 end
@@ -105,7 +114,7 @@ function DarkShapeBullet:doShrivel()
     end
 end
 
---- *(Override)*
+--- *(Override)* Pushes the bullet back a bit if comes into close range with any other DarkShapeBullet(?)
 function DarkShapeBullet:doPushBack()
     for _, bullet in ipairs(Game.stage:getObjects(DarkShapeBullet)) do
         if (bullet.id ~= self and MathUtils.dist(bullet.x, bullet.y, self.x, self.y) < self.pushback_radius) then
@@ -116,7 +125,7 @@ function DarkShapeBullet:doPushBack()
     end
 end
 
---- *(Override)* Handles the movement of the bullet.
+--- *(Override)* Primarily handles the movement of the bullet.
 function DarkShapeBullet:chaseHeart()
     local hx, hy = Game.battle.soul.x, Game.battle.soul.y
 
@@ -125,8 +134,8 @@ function DarkShapeBullet:chaseHeart()
         self.light = MathUtils.approach(self.light, 1, self.light_rate * DTMULT)
 
         if Game.battle.soul.ominous_loop then
-			Game.battle.soul.ominous_decline = false
-			Game.battle.soul.ominous_volume = MathUtils.approach(Game.battle.soul.ominous_volume, 1, ((1 - Game.battle.soul.ominous_volume) * 0.15) * DTMULT)
+            Game.battle.soul.ominous_decline = false
+            Game.battle.soul.ominous_volume = MathUtils.approach(Game.battle.soul.ominous_volume, 1, ((1 - Game.battle.soul.ominous_volume) * 0.15) * DTMULT)
         end
 
         -- Spawn particles while bullet is shrinking.
@@ -136,7 +145,7 @@ function DarkShapeBullet:chaseHeart()
             particle.physics.direction = MathUtils.angle(hx, hy, particle.x, particle.y)
             particle.physics.speed = 1 + MathUtils.random(3)
             particle.shrink_rate = 0.2
-			particle.layer = self.layer
+            particle.layer = self.layer
         end
     else
         self.myspeed = MathUtils.approach(self.myspeed, self.speed_max * self.speed_max_multiplier, (self.accel * self.speed_max_multiplier * (1 - self.light)) * DTMULT)
@@ -156,16 +165,16 @@ function DarkShapeBullet:destroy()
             tp_blob.size = 2
         end
     end
-	
-	tp_blob:prime()
+    
+    tp_blob:prime()
 
     self:remove()
 end
 
 function DarkShapeBullet:update()
-	self:updateStepOne()
-	self:updateStepZero()
-	self:updateDrawZero()
+    self:updateStepOne()
+    self:updateStepZero()
+    self:updateDrawZero()
     super.update(self)
 end
 
@@ -191,6 +200,7 @@ function DarkShapeBullet:updateStepZero()
         end
     end
 
+    --No idea what this is supposed to do, but it seemingly does nothing since `self.ypush` is set to 0 by default.
     self.y = self.y + self.ypush * DTMULT
     self.ypush = self.ypush * (0.9 ^ DTMULT)
 
@@ -254,6 +264,7 @@ function DarkShapeBullet:updateStepOne()
     self.physics.direction = self.physics.direction - MathUtils.clamp(MathUtils.sign(anglediff) * self.tracking_val * turning_mult, -math.abs(anglediff), math.abs(anglediff))
 end
 
+--- *(Override)* Handles most of the bullet's animation/scaling code.
 function DarkShapeBullet:updateDrawZero()
     self:setScale(self.xscale * self.xface * self.scalefactor, self.yscale * self.yface * self.scalefactor)
 

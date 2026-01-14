@@ -191,7 +191,7 @@ function Mizzle:getNextWaves()
     if self.tired == false then
         return {"mizzle/spirals"}
     else
-        --return {"mizzle/spotlights"}
+        return {"mizzle/spotlights"}
     end
 
     return super.getNextWaves(self)

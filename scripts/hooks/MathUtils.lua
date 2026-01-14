@@ -1,6 +1,6 @@
 local MathUtils = setmetatable({}, {__index = MathUtils})
 
-local function easeOut(value, ease_type)
+function MathUtils.easeOutAccurate(value, ease_type)
     if ease_type < -3 or ease_type > 7 then
         return value
     end
@@ -31,7 +31,7 @@ local function easeOut(value, ease_type)
     end
 end
 
-local function easeIn(value, ease_type)
+function MathUtils.easeInAccurate(value, ease_type)
     if ease_type < -3 or ease_type > 7 then
         return value
     end
@@ -56,7 +56,7 @@ local function easeIn(value, ease_type)
     end
 end
 
-local function easeInOut(value, ease_type)
+function MathUtils.easeInOutAccurate(value, ease_type)
     if ease_type < -3 or ease_type > 7 then
         return value
     end
@@ -75,23 +75,23 @@ local function easeInOut(value, ease_type)
 
     value = value * 2
     if value < 1 then
-        return 0.5 * easeIn(value, ease_type)
+        return 0.5 * MathUtils.easeInAccurate(value, ease_type)
     else
         value = value - 1
-        return 0.5 * (easeOut(value, ease_type) + 1)
+        return 0.5 * (MathUtils.easeOutAccurate(value, ease_type) + 1)
     end
 end
 
 function MathUtils.lerpEaseOut(from, to, value, ease_type)
-    return MathUtils.lerp(from, to, easeOut(value, ease_type))
+    return MathUtils.lerp(from, to, MathUtils.easeOutAccurate(value, ease_type))
 end
 
 function MathUtils.lerpEaseIn(from, to, value, ease_type)
-    return MathUtils.lerp(from, to, easeIn(value, ease_type))
+    return MathUtils.lerp(from, to, MathUtils.easeInAccurate(value, ease_type))
 end
 
 function MathUtils.lerpEaseInOut(from, to, value, ease_type)
-    return MathUtils.lerp(from, to, easeInOut(value, ease_type))
+    return MathUtils.lerp(from, to, MathUtils.easeInOutAccurate(value, ease_type))
 end
 
 function MathUtils.lengthDirX(length, dir)
