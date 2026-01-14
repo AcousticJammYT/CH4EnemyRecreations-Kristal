@@ -89,7 +89,7 @@ function Winglade:onAct(battler, name)
         return "* You spun masterfully!"
     elseif name == "SpinS" then
         for _, enemy in ipairs(Game.battle:getActiveEnemies()) do
-            if enemy.id == 'winglade' then enemy:addMercy(60) end
+            enemy:addMercy(60)
         end
         Assets.stopAndPlaySound("pirouette", 0.7, 1.1)
         battler:setAnimation('pirouette')
@@ -103,10 +103,6 @@ function Winglade:onAct(battler, name)
         Game.battle:startActCutscene("wingladewhirl")
         return
     elseif name == "Standard" then
-        -- Ok so like if you use SpinS + R-Action then despite being an XAction,
-        -- R-Action still gets called here for some reason?????
-        -- Why is it like that why
-        -- Or am I tripping
         return self:onShortAct(battler, name)
     end
 
@@ -114,7 +110,7 @@ function Winglade:onAct(battler, name)
 end
 
 function Winglade:onShortAct(battler, name)
-    if name == "Standard" then --X-Action
+    if name == "Standard" then
         Assets.stopAndPlaySound("pirouette", 0.7, 1.1)
         battler:setAnimation('pirouette')
         if battler.chara.id == "ralsei" then
@@ -182,7 +178,7 @@ function Winglade:getEncounterText()
         return self.spareable_text
     end
 
-    if MathUtils.random(0, 100) < 3 then
+    if MathUtils.randomInt(100) < 3 then
         return "* Smells like old down pillow."
     end
 

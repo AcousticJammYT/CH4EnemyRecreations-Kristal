@@ -18,7 +18,6 @@ function actor:init()
     self.talk_sprites = {}
 
     self.animations = {
-        ["idle"]   = {"body", 1, true},
         ["hurt"]   = {"hurt", 1, true},
         ["spared"] = {"spare", 1, true},
     }

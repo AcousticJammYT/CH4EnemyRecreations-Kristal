@@ -138,7 +138,7 @@ function BalthizardShakeController:update()
                 self.enemy.temp_mercy_percent = nil
             end
         end
-        if self.shakemercystart >= 100 then
+        if self.shakemercystart >= 100 and self.shakemaxmercyhp <= 0 then
             self.enemy:spare()
         end
         self:clearText()
