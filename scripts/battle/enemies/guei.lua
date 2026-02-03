@@ -108,19 +108,32 @@ end
 function Guei:getEncounterText()
     for _,v in ipairs(Game.battle.enemies) do
 		if v.tired then
-			if Game.tension >= 16 then
-				if Game:hasPartyMember("jamm") then
-					return "* Guei looks [color:blue]TIRED[color:reset]. Try using Ralsei's [color:blue]PACIFY[color:reset] or Jamm's [color:blue]NUMBSHOT[color:reset]!"
-				else
-					return "* Guei looks [color:blue]TIRED[color:reset]. Perhaps Ralsei's MAGIC, [color:blue]PACIFY[color:reset] would be effective..."
-				end
-			else
-				if Game:hasPartyMember("jamm") then
-					return "* Guei looks [color:blue]TIRED[color:reset]. [color:yellow]DEFEND[color:reset] to gain [color:yellow]TP[color:reset], then try Ralsei's [color:blue]PACIFY[color:reset] or Jamm's [color:blue]NUMBSHOT[color:reset]...!"
-				else
-					return "* Guei looks [color:blue]TIRED[color:reset]. [color:yellow]DEFEND[color:reset] to gain [color:yellow]TP[color:reset], then try Ralsei's MAGIC, [color:blue]PACIFY[color:reset]...!"
+			local multi = 0
+			local tp = math.huge
+			local name = ""
+			local spellname = ""
+			for _, party in ipairs(Game.battle.party) do
+				for _, spell in ipairs(party.chara:getSpells()) do
+					if spell:hasTag("spare_tired") then
+						multi = multi + 1
+						name = party.chara:getName()
+						spellname = spell:getName():upper()
+						if spell:getTPCost(party.chara) < tp then
+							tp = spell:getTPCost(party.chara)
+						end
+					end
 				end
 			end
+			if multi == 0 then
+				return "* Guei looks [color:blue]TIRED[color:reset]."
+			elseif Game.tension >= tp then
+				if multi > 1 then
+					return "* Guei looks [color:blue]TIRED[color:reset]. Perhaps a [color:blue]sleep spell[color:reset] would be effective..."
+				else
+					return "* Guei looks [color:blue]TIRED[color:reset]. Perhaps " .. name .. "'s MAGIC, [color:blue]" .. spellname .. "[color:reset] would be effective..."
+				end
+			end
+			return "* Guei looks [color:blue]TIRED[color:reset]. [color:yellow]DEFEND[color:reset] to gain [color:yellow]TP[color:reset], then try " .. name .. "'s MAGIC, [color:blue]" .. spellname .. "[color:reset]...!"
 		end
 	end
     if self.low_health_text and self.health <= (self.max_health * self.low_health_percentage) then

@@ -142,17 +142,6 @@ function Organikk:onAct(battler, name)
             end)
             return
 
-        -- DPR moment
-        elseif battler.chara.id == "dess" then
-            local notes = {"so", "do", "la", "fa", "mi", "do_a", "re", "ti"}
-            for _, note in pairs(notes) do
-                Assets.playSound("organ/"..note, 0.5)
-            end
-
-            self:addMercy(15)
-            self.dialogue_override = "What a terrible\ncacophony!"
-            return "* Dess played all sounds at once!"
-
         else
             self.organsound = true
             self:addMercy(20)
