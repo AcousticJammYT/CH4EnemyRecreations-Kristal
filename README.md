@@ -23,4 +23,5 @@ A library for Kristal that recreates Chapter 4's enemies (bosses such as Jackens
 * **HmmNoPls** - Ported the `scr_lerpvar` function from Deltarune, among a few other lerping functions. Also recreated Winglade and helped with recreating the attacks for Organikk and Wicabel.
 * **TAIRAA** - Helped port the attacks for Organikk, Balthizard, and Bibliox.
 * **YeetusSnoopy** - A couple things from their Titan Spawn library, which were used as a basis for the Titan Spawn enemy recreation here.
+* **AcousticJamm** - Created a dynamic tired text system for Guei.
 * **NyakoFox** - being awesome and swag

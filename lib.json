@@ -17,6 +17,8 @@
         "TAIRAA",              // Helped port the attacks for Organikk, Balthizard, and Bibliox.
 
         "YeetusSnoopy",        // A couple things from their Titan Spawn library, which were used as a basis for the Titan Spawn enemy recreation here.
+		
+        "AcousticJamm",        // Created a dynamic tired text system for Guei.
 
         "NyakoFox",            // being awesome and swag
     ],
